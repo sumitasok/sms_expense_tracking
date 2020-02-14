@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  transaction:
+    image: smsinfo
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python main.py
+    volumes:
+      - .:/src
+      # not able to read when volume mounted from ~/Library/Messages
+      - ./data/chat.db:/data/chat.db
+    environment:
+      MONGODB: ${MONGODB}
+
+  delivery:
+    image: smsinfo
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python delivery.py
+    volumes:
+      - .:/src
+      # not able to read when volume mounted from ~/Library/Messages
+      - ./data/chat.db:/data/chat.db
+    environment:
+      MONGODB: ${MONGODB}
