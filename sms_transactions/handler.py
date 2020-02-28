@@ -38,6 +38,30 @@ def hdfcCreditCardInterpreterVia(txn):
         'datetime': datetime.datetime.strptime(x.group(3), hdfcCreditCardInterpreterFormatStr)
     } if x != None else {}
 
+paytmInterpreterFormatStr = '%b %d, %Y %H:%M:%S'
+# Paid Rs. 106.76 to UBER on Feb 10, 2020 11:33:28 with Ref: 28811759158. For more details, visit https://p-y.tm/-------
+def paytmInterpreter(txn):
+    x = re.search("Paid Rs. ([0-9.]+) to\s+([a-zA-Z0-9\s._//]+)? on (([a-zA-Z]){3} \d{1,2}, (\d{4} \d{2}:\d{2}:\d{2}))", txn)
+    return {
+        'expense_amount': float(x.group(1)),
+        'payment_mode': 'PAYTM',
+        'merchant': x.group(2).strip(),
+        'datetime': datetime.datetime.strptime(x.group(3), paytmInterpreterFormatStr)
+    } if x != None else {}
+
+
+# Acct ([X0-9]+) debited with INR([0-9.]+) on (\d{1,2}-([a-zA-Z]){3}-\d{2,4}) and ([a-zA-Z0-9@])+ credited.
+iciciUPIInterpreterFormatStr = '%d-%b-%y'
+# Paid Rs. 106.76 to UBER on Feb 10, 2020 11:33:28 with Ref: 28811759158. For more details, visit https://p-y.tm/1Q-bnfM
+def iciciUPIInterpreter(txn):
+    x = re.search("Acct ([X0-9]+) debited with INR([0-9.]+) on (\d{1,2}-([a-zA-Z]){3}-\d{2,4}) and (\S+) credited.", txn)
+    return {
+        'expense_amount': float(x.group(2)),
+        'payment_mode': x.group(1),
+        'merchant': x.group(5).strip(),
+        'datetime': datetime.datetime.strptime(x.group(3), iciciUPIInterpreterFormatStr)
+    } if x != None else {}
+
 def mongoCollection(connstr, db, collection):
     client = MongoClient(connstr)
     db = client[db]
@@ -95,6 +119,36 @@ def extract_populate(event, context):
             ).sort([("message.date",1)]))):
         print("message", _item[1])
         _transaction = hdfcCreditCardInterpreterVia(_item[1]['message']['text'])
+        print("analysis", _transaction, "\n\n")
+        if _transaction != {}:
+            result = collection.update_one(
+                {'_id': bson.ObjectId(str(_item[1]['_id']))},
+                {'$set' : {'transaction': _transaction, 'status': {'analysis_done': True}}})
+            print('success' if result.modified_count == 1 else 'unsuccessful')
+
+    for _item in list(
+        enumerate(
+            collection.find({
+                "message.text": {'$regex': 'Paid Rs. ([0-9.]+) to'},
+                "status.analysis_done": {'$ne': True}}
+            ).sort([("message.date",1)]))):
+        print("message", _item[1])
+        _transaction = paytmInterpreter(_item[1]['message']['text'])
+        print("analysis", _transaction, "\n\n")
+        if _transaction != {}:
+            result = collection.update_one(
+                {'_id': bson.ObjectId(str(_item[1]['_id']))},
+                {'$set' : {'transaction': _transaction, 'status': {'analysis_done': True}}})
+            print('success' if result.modified_count == 1 else 'unsuccessful')
+
+    for _item in list(
+        enumerate(
+            collection.find({
+                "message.text": {'$regex': 'Acct ([X0-9]+) debited with INR([0-9.]+)'},
+                "status.analysis_done": {'$ne': True}}
+            ).sort([("message.date",1)]))):
+        print("message", _item[1])
+        _transaction = iciciUPIInterpreter(_item[1]['message']['text'])
         print("analysis", _transaction, "\n\n")
         if _transaction != {}:
             result = collection.update_one(

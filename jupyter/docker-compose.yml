@@ -14,4 +14,4 @@ services:
       # not able to read when volume mounted from ~/Library/Messages
     #   - ./data/chat.db:/data/chat.db
     environment:
-      MONGODB: ${MONGODB}
+      MONGODB_CONN_STR: ${MONGODB_CONN_STR}

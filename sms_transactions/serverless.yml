@@ -65,7 +65,7 @@ functions:
 #    Check the event documentation for details
     events:
       - http:
-          path: users/create
+          path: sms_transactions/extract_populate
           method: get
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}

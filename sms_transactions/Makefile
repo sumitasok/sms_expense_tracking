@@ -23,6 +23,12 @@ serverless:
 npm:
 	docker run -it -v `pwd`:/src -v `pwd`/.aws:/root/.aws --rm serverless:latest npm $(RUN_ARGS)
 
+deploy:
+	serverless deploy --aws-profile sumit 
+
+invoke:
+	serverless invoke -f  extract_populate --log --aws-profile sumit
+
 # create .aws folder and copy your config and credential to the same.
 
 # Step 3:
