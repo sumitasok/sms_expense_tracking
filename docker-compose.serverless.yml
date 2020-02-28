@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  virtualenv:
+    image: virtualenv:latest
+    build:
+      context: .
+      dockerfile: venv.Dockerfile
+
+  serverless:
+    image: serverless:latest
+    build:
+      context: .
+      dockerfile: serverless.Dockerfile
