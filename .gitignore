@@ -3,3 +3,4 @@ data/
 .local
 history.sqlite
 .vscode/settings.json
+sms_transactions/exports

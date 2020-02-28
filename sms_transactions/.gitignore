@@ -16,5 +16,9 @@ var/
 .installed.cfg
 *.egg
 
+venv/
+.aws
+node_modules/
+
 # Serverless directories
 .serverless
