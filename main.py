@@ -28,7 +28,8 @@ def select_sms(conn, filters):
     """
     cur = conn.cursor()
     date = filters['date']
-    cur.execute("SELECT text, date, guid FROM message where (text LIKE '%debit%' or text LIKE '%credit%' or text like '%transaction%' or text like '%txn%' or text like '%paid%' or text like '%spent%')" + "and date > %d" %(date,))
+    cur.execute("SELECT text, date, guid FROM message where (text LIKE '%debit%' or text LIKE '%credit%' or text like '%transaction%' or text like '%txn%' or text like '%paid%' or text like '%spent%' or text LIKE '%Acct XXX983%')" + "and date > %d" %(date,))
+    # cur.execute("SELECT text, date, guid FROM message where (text LIKE '%Acct XXX983%')")
  
     rows = cur.fetchall()
  
