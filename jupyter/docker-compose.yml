@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  jpy:
+    image: jupyter/sms_expense_tracker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    # command: python main.py
+    volumes:
+      - ./work:/home/jovyan
+      # not able to read when volume mounted from ~/Library/Messages
+    #   - ./data/chat.db:/data/chat.db
+    environment:
+      MONGODB: ${MONGODB}
