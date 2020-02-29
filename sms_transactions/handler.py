@@ -62,6 +62,19 @@ def iciciUPIInterpreter(txn):
         'datetime': datetime.datetime.strptime(x.group(3), iciciUPIInterpreterFormatStr)
     } if x != None else {}
 
+# Txn of INR 970.00 done on Acct XX983 on 01-Feb-20.Info: VPS*PAY Sreen.Avbl Bal:INR 13,481.75.Call 18002662 for dispute or SMS BLOCK 983 to 9215676766
+# Txn of INR ([0-9.]+) done on Acct ([X0-9]+) on (\d{1,2}-([a-zA-Z]){3}-\d{2,4}).Info: ([a-zA-Z0-9\s._//*]+)?Avbl Bal:INR ([\d,]+.[\d]{2})?.
+
+iciciUPIInterpreterFormatStr2 = '%d-%b-%y'
+def iciciUPIInterpreter2(txn):
+    x = re.search("Txn of INR ([0-9.]+) done on Acct ([X0-9]+) on (\d{1,2}-([a-zA-Z]){3}-\d{2,4}).Info: ([a-zA-Z0-9\s._//*]+)?Avbl Bal:INR ([\d,]+.[\d]{2})?.", txn)
+    return {
+        'expense_amount': float(x.group(1)),
+        'payment_mode': x.group(2),
+        'merchant': x.group(5).strip(),
+        'datetime': datetime.datetime.strptime(x.group(3), iciciUPIInterpreterFormatStr)
+    } if x != None else {}
+
 def mongoCollection(connstr, db, collection):
     client = MongoClient(connstr)
     db = client[db]
@@ -155,6 +168,20 @@ def extract_populate(event, context):
                 {'_id': bson.ObjectId(str(_item[1]['_id']))},
                 {'$set' : {'transaction': _transaction, 'status': {'analysis_done': True}}})
             print('success' if result.modified_count == 1 else 'unsuccessful')
+
+    for _item in list(
+        enumerate(
+            collection.find({
+                "message.text": {'$regex': 'Txn of INR ([0-9.]+) done on Acct ([X0-9]+) on'},
+                "status.analysis_done": {'$ne': True}}
+            ).sort([("message.date",1)]))):
+        print("message", _item[1])
+        _transaction = iciciUPIInterpreter2(_item[1]['message']['text'])
+        print("analysis", _transaction, "\n\n")
+        result = collection.update_one(
+            {'_id': bson.ObjectId(str(_item[1]['_id']))},
+            {'$set' : {'transaction': _transaction, 'status': {'analysis_done': True}}})
+        print('success' if result.modified_count == 1 else 'unsuccessful')
 
 if __name__ == "__main__":
     extract_populate('', '')
