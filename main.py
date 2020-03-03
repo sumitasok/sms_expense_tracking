@@ -28,7 +28,7 @@ def select_sms(conn, filters):
     """
     cur = conn.cursor()
     date = filters['date']
-    cur.execute("SELECT text, date, guid FROM message where (text LIKE '%debit%' or text LIKE '%credit%' or text like '%transaction%' or text like '%txn%' or text like '%paid%' or text like '%spent%' or text LIKE '%Acct XXX983%')" + "and date > %d" %(date,))
+    cur.execute("SELECT text, date, guid FROM message where (text LIKE '%debit%' or text LIKE '%credit%' or text like '%transaction%' or text like '%txn%' or text like '%paid%' or text like '%spent%' or text LIKE '%Acct XXX983%' or text like '%Akshayakalpa%')" + "and date > %d" %(date,))
     # cur.execute("SELECT text, date, guid FROM message where (text LIKE '%Acct XXX983%')")
  
     rows = cur.fetchall()
@@ -55,6 +55,8 @@ def mongoCollection(connstr, db, collection):
 if __name__ == '__main__':
     conn = create_connection("/data/chat.db")
 
+    status_run_id = datetime.datetime.now().isoformat()
+
     collection = mongoCollection(os.environ.get('MONGODB'), 'smsinfo', 'transactions')
     latestObjList = list(enumerate(collection.find().sort([("message.date",-1)]).limit(1)))
     if len(latestObjList) == 0:
@@ -64,8 +66,8 @@ if __name__ == '__main__':
 
     for value in select_sms(conn, {'date': date}):
         obj = collection.find_one({'message': {'guid': value['guid']}})
-        print(value)
+        print(value, obj)
         if obj == None:
-            print(collection.insert_one({ 'message' : value }).inserted_id)
+            print(collection.insert_one({ 'message' : value, 'status.run_id': status_run_id}).inserted_id)
         else:
             print('already exist')
