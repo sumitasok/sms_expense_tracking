@@ -68,6 +68,6 @@ if __name__ == '__main__':
         obj = collection.find_one({'message': {'guid': value['guid']}})
         print(value, obj)
         if obj == None:
-            print(collection.insert_one({ 'message' : value, 'status.run_id': status_run_id}).inserted_id)
+            print(collection.insert_one({ 'message' : value, 'status': {'run_id': status_run_id}}).inserted_id)
         else:
             print('already exist')
