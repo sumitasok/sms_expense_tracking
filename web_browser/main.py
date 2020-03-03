@@ -36,9 +36,14 @@ def index(month):
                     }, {'transaction': 1})))
 
     monthly_transactions = list(map(extract_transactions, monthly))
-    # monthly_transactions = [[1,2], [2,3]]
     return render_template(
         'index.html',monthly_transactions=monthly_transactions)
+
+@app.route("/delete/<string:_id>")
+def delete(_id):
+    r = collection.delete_one({_id: bson.ObjectId(_id)})
+    print("delete " + str(r.deleted_count))
+    return redirect('/month/1')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80, debug=True)

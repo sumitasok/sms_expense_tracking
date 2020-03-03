@@ -2,19 +2,21 @@
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.10.20/api/sum().js"></script>
 </head>
 <body>
 
     <table id="month_table"  class="display">
     <thead>
         <tr>
-            <th>Column 1</th>
-            <th>Column 2</th>
-            <th>Column 2</th>
-            <th>Column 2</th>
-            <th>Column 2</th>
-            <th>Column 2</th>
-            <th>Column 2</th>
+            <th>Price</th>
+            <th>Mode</th>
+            <th>Merchant</th>
+            <th>date time</th>
+            <th>category</th>
+            <th>sub category</th>
+            <th>id</th>
+            <th>action</th>
         </tr>
     </thead>
     <tbody>>
@@ -27,14 +29,25 @@
                 <td>{{ mt[4] }}</td>
                 <td>{{ mt[5] }}</td>
                 <td>{{ mt[6] }}</td>
+                <td><a href="{{ url_for('delete', _id=mt[6]) }}">Delete</a></td>
             </tr>
         {%endfor%}
         </tbody>
+        <tfoot>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tfoot>
     </table>
     
     <script  type="text/javascript" >
         $(document).ready( function () {
-            $('#month_table').DataTable();
+            $('#month_table').DataTable( {
+                drawCallback: function () {
+                var api = this.api();
+                $( api.table().footer() ).html(
+                    api.column(1, {page:'current'} ).data().sum()
+                );
+                }
+            } );
         } );
     </script>
 </body>
