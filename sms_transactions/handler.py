@@ -88,6 +88,21 @@ def iciciUPIInterpreter3(txn):
         'datetime': datetime.datetime.strptime(x.group(3), iciciUPIInterpreterFormatStr)
     } if x != None else {}
 
+# Akshayakalpa! Your order no 379463 for Rs. 270 will arrive tomorrow between 4:30-8:00 am. Your current Balance is Rs 260 Thank you.
+# Akshayakalpa! Your order no ([X0-9]+) for Rs. ([X0-9]+) will arrive tomorrow between ([\S\s]+)?. Your current Balance is Rs ([X0-9]+) Thank you.
+
+def akshayakalpaInterpreter(txn):
+    x = re.search("Akshayakalpa! Your order no ([X0-9]+) for Rs. ([X0-9]+) will arrive tomorrow between ([\S\s]+)?. Your current Balance is Rs ([X0-9]+) Thank you.", txn)
+    return {
+        'expense_amount': float(x.group(2)),
+        'payment_mode': 'Akshayakalpa Wallet',
+        'merchant': 'Akshayakalpa',
+        'datetime': datetime.datetime.now(),
+        'available_balance': float(x.group(4)),
+    } if x != None else {}
+#     return x
+
+
 def mongoCollection(connstr, db, collection):
     client = MongoClient(connstr)
     db = client[db]
@@ -204,6 +219,20 @@ def extract_populate(event, context):
             ).sort([("message.date",1)]))):
         print("message", _item[1])
         _transaction = iciciUPIInterpreter3(_item[1]['message']['text'])
+        print("analysis", _transaction, "\n\n")
+        result = collection.update_one(
+            {'_id': bson.ObjectId(str(_item[1]['_id']))},
+            {'$set' : {'transaction': _transaction, 'status': {'analysis_done': True}}})
+        print('success' if result.modified_count == 1 else 'unsuccessful')
+
+    for _item in list(
+        enumerate(
+            collection.find({
+                "message.text": {'$regex': 'Akshayakalpa! Your order no '},
+                "status.analysis_done": {'$ne': True}}
+            ).sort([("message.date",1)]))):
+        print("message", _item[1])
+        _transaction = akshayakalpaInterpreter(_item[1]['message']['text'])
         print("analysis", _transaction, "\n\n")
         result = collection.update_one(
             {'_id': bson.ObjectId(str(_item[1]['_id']))},
