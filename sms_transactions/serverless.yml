@@ -58,6 +58,16 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  categorise:
+    handler: categorise.categorise
+    events:
+      - http:
+          path: sms_transactions/categorise
+          method: get
+      - schedule: rate(60 minutes)
+    environment:
+      MONGODB_CONN_STR: ${env:MONGODB_CONN_STR}
+
   extract_populate:
     handler: handler.extract_populate
 #    The following are a few example events you can configure
