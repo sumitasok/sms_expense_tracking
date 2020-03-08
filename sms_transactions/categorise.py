@@ -40,6 +40,7 @@ merchant_category_mapping = [
     {'merchant': ['BOOKMYSHOW'], 'category': 'entertainment', 'sub_category': 'movie'},
     {'merchant': ['PVR LIMITED.'], 'category': 'food', 'sub_category': 'movie'},
     {'merchant': ['PHOENIX MARKETCITY BAN'], 'category': 'auto', 'sub_category': 'parking'},
+    {'merchant': ['Akshayakalpa'], 'category': 'grocery', 'sub_category': 'diary'},
 ]
 
 # bharatpe09600003315¡yesbankltd => Empire hotel
