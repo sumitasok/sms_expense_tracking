@@ -24,14 +24,15 @@ merchant_category_mapping = [
     {'merchant': ['VIN*APPLE COM.', 'VSI*APPLE COM.'], 'category': 'subscription', 'sub_category': 'apps'},
     {'merchant': ['VPS*HORTICULT.'], 'category': 'grocery', 'sub_category': 'vegetables'},
     {'merchant': ['FRESHTOH3631510', 'FRESHTOH3631510 in BANGALORE', 'Freshtohome'], 'category': 'grocery', 'sub_category': 'non-veg'},
-    {'merchant': ['AJIO', 'MYNTRA72883'], 'category': 'purchase', 'sub_category': 'cloths'},
-    {'merchant': ['IIN*Amazon .'], 'category': 'purchase', 'sub_category': 'household'},
+    {'merchant': ['AJIO', 'MYNTRA72883', 'FIRSTCRY11847'], 'category': 'purchase', 'sub_category': 'cloths'},
+    {'merchant': ['IIN*Amazon .', 'AMAZON'], 'category': 'purchase', 'sub_category': 'household'},
     {'merchant': ['amazonsellerservices.98397377@hdfcbank'], 'category': 'purchase', 'sub_category': 'toiletry'},
     {'merchant': ['Solanki medicals'], 'category': 'medical', 'sub_category': 'medicine'},
-    {'merchant': ['Bharti Airtel Limited'], 'category': 'utility', 'sub_category': 'mobile'},
+    {'merchant': ['Bharti Airtel Limited', 'JIO Infocom'], 'category': 'utility', 'sub_category': 'mobile'},
     {'merchant': ['Instapay BBPS'], 'category': 'utility', 'sub_category': 'bescom'},
     {'merchant': ['LIC'], 'category': 'insurance', 'sub_category': 'insurance'},
-    {'merchant': ['..RAJDHANI PHOENIX_', '..ARENA_', 'bharatpe09600003315¡yesbankltd'], 'category': 'food', 'sub_category': 'eating-out'},
+    {'merchant': ['..RAJDHANI PHOENIX_', '..ARENA_', 'bharatpe09600003315¡yesbankltd', 'SRI UDUPI PARK'],
+        'category': 'food', 'sub_category': 'eating-out'},
     {'merchant': ['The lassi club', 'paytmqr281005050101j1cog2ifqf2u@paytm'], 'category': 'food', 'sub_category': 'snacks'},
     {'merchant': ['H M LEISURE'], 'category': 'purchase', 'sub_category': 'toys'},
     {'merchant': ['PEPPERFRY64213'], 'category': 'purchase', 'sub_category': 'furniture'},
@@ -41,6 +42,7 @@ merchant_category_mapping = [
     {'merchant': ['PVR LIMITED.'], 'category': 'food', 'sub_category': 'movie'},
     {'merchant': ['PHOENIX MARKETCITY BAN'], 'category': 'auto', 'sub_category': 'parking'},
     {'merchant': ['Akshayakalpa'], 'category': 'grocery', 'sub_category': 'diary'},
+    {'merchant': ['BBPSBILLPAY'], 'category': 'utility', 'sub_category': 'internet'},
 ]
 
 # bharatpe09600003315¡yesbankltd => Empire hotel
