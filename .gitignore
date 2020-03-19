@@ -4,3 +4,6 @@ data/
 history.sqlite
 .vscode/settings.json
 sms_transactions/exports
+*.log
+azure/exports
+**/.telemetry/
