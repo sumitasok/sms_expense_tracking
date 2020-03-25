@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+    download_monthly:
+        image: smsinfo
+        build:
+          context: .
+          dockerfile: Dockerfile
+        command: python -i download_csv.py
+        volumes:
+          - .:/src
+        environment:
+          MONGODB: ${MONGODB}
+          YEAR: ${YEAR}
+          MONTH: ${MONTH}

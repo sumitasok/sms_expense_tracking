@@ -19,7 +19,7 @@
             <th>action</th>
         </tr>
     </thead>
-    <tbody>>
+    <tbody>
         {%for mt in monthly_transactions%}
             <tr>
                 <td>{{ mt[0] }}</td>
@@ -40,7 +40,8 @@
     
     <script  type="text/javascript" >
         $(document).ready( function () {
-            $('#month_table').DataTable( {
+            table = $('#month_table').DataTable( {
+                pageLength: 100,
                 drawCallback: function () {
                 var api = this.api();
                 $( api.table().footer() ).html(
@@ -48,6 +49,7 @@
                 );
                 }
             } );
+            table.order([4, 'desc']).draw();
         } );
     </script>
 </body>
