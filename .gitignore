@@ -8,3 +8,5 @@ sms_transactions/exports
 azure/exports
 **/.telemetry/
 __pycache__/
+jupyter/work/.cache/parso/CPython-37-33/17708d38681238dd1bba305ffeb4ac990f31754460f9a2481cbff62497eedbfb-9fa4b85aedb53363eda4949dd4493d7582423e621deee1468f53d5a07fcfdc25.pkl
+jupyter/work/.cache/parso/CPython-37-33/17708d38681238dd1bba305ffeb4ac990f31754460f9a2481cbff62497eedbfb-3ba426c09ad36ca225a13ea79d21109d820f00ed074f58f10df148ab57f1b9bc.pkl

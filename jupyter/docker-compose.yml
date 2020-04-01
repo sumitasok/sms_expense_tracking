@@ -11,7 +11,6 @@ services:
     # command: python main.py
     volumes:
       - ./work:/home/jovyan
-      # not able to read when volume mounted from ~/Library/Messages
-    #   - ./data/chat.db:/data/chat.db
+      - ../data:/data
     environment:
       MONGODB_CONN_STR: ${MONGODB_CONN_STR}
