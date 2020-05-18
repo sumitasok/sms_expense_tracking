@@ -64,7 +64,7 @@ functions:
       - http:
           path: sms_transactions/categorise
           method: get
-      - schedule: rate(60 minutes)
+      - schedule: rate(30 minutes)
     environment:
       MONGODB_CONN_STR: ${env:MONGODB_CONN_STR}
 

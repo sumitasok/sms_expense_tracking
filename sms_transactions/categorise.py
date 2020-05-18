@@ -11,7 +11,7 @@ def add_category_info_for_merchant(collection, merchant, category='', sub_catego
     result = collection.update_many(
         {'transaction.merchant': merchant, 'transaction.category': None}, 
         {'$set' : {'transaction.category': category, 'transaction.sub_category': sub_category}})
-    print(merchant + ' modified ' + str(result.modified_count))
+    print(str(merchant) + ' modified ' + str(result.modified_count))
     return result
 
 merchant_category_mapping = [
@@ -43,6 +43,7 @@ merchant_category_mapping = [
     {'merchant': ['PHOENIX MARKETCITY BAN'], 'category': 'auto', 'sub_category': 'parking'},
     {'merchant': ['Akshayakalpa'], 'category': 'grocery', 'sub_category': 'diary'},
     {'merchant': ['BBPSBILLPAY'], 'category': 'utility', 'sub_category': 'internet'},
+
 ]
 
 # bharatpe09600003315¡yesbankltd => Empire hotel
@@ -51,9 +52,39 @@ merchant_category_mapping = [
 def categorise(event, context):
     collection = mongoCollection(os.environ.get('MONGODB_CONN_STR'), 'smsinfo', 'transactions')
 
+    pipeline = [
+        {"$match": {
+            "status.analysis_done": True,
+            "transaction.category": {'$exists': True}
+        }},
+        {"$sort": {
+            'message.date': -1,
+        }},
+        {"$project": {
+            "_id": "$transaction.merchant",
+            "merchant": "$transaction.merchant",
+            "category": "$transaction.category",
+            "sub_category": "$transaction.sub_category"
+        }},
+        {"$group": {
+            '_id': '$merchant',
+            'merchant': {
+                '$last': '$merchant'
+            },
+            'category': {
+                '$last': '$category'
+            },
+            'sub_category': {
+                '$last': '$sub_category'
+            }
+        }}
+    ]
+
+    merchant_category_mapping = list(collection.aggregate(pipeline))
     for _m in merchant_category_mapping:
-        for _merchant in _m['merchant']:
-            add_category_info_for_merchant(collection, _merchant, category=_m['category'], sub_category=_m['sub_category'])
+        add_category_info_for_merchant(collection, _m['merchant'], category=_m['category'], sub_category=_m['sub_category'])
+        # for _merchant in _m['merchant']:
+        #     add_category_info_for_merchant(collection, _merchant, category=_m['category'], sub_category=_m['sub_category'])
 
 
 if __name__ == "__main__":
